@@ -24,6 +24,7 @@ RUN mkdir -p /data/db
 
 #Configuration
 ADD . /docker
+RUN ln -sf /docker/etc/mongodb.conf /etc/
 
 #Runit Automatically setup all services in the sv directory
 RUN for dir in /docker/sv/*; do echo $dir; chmod +x $dir/run $dir/log/run; ln -s $dir /etc/service/; done
