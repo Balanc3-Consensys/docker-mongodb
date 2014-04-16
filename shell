@@ -1,1 +1,1 @@
-docker run -v /media/data/mongodb:/data/db -p 27017:27017 -p 28017:28017 -i -t mongodb /bin/bash
+docker run -v /media/data/mongodb:/data/db -p 27017:27017 -p 28017:28017 --rm -i -t mongodb /bin/bash
