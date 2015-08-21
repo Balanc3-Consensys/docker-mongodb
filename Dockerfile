@@ -1,34 +1,29 @@
-FROM ubuntu
+FROM ubuntu:14.04
  
-RUN echo 'deb http://archive.ubuntu.com/ubuntu precise main universe' > /etc/apt/sources.list && \
-    echo 'deb http://archive.ubuntu.com/ubuntu precise-updates main universe' >> /etc/apt/sources.list && \
-    apt-get update
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update
+RUN locale-gen en_US en_US.UTF-8
+ENV LANG en_US.UTF-8
+RUN echo "export PS1='\e[1;31m\]\u@\h:\w\\$\[\e[0m\] '" >> /root/.bashrc
 
 #Runit
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y runit 
-CMD /usr/sbin/runsvdir-start
-
-#SSHD
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server &&	mkdir -p /var/run/sshd && \
-    echo 'root:root' |chpasswd
+RUN apt-get install -y runit 
+CMD export > /etc/envvars && /usr/sbin/runsvdir-start
+RUN echo 'export > /etc/envvars' >> /root/.bashrc
 
 #Utilities
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim less net-tools inetutils-ping curl git telnet nmap socat dnsutils netcat tree htop unzip sudo
+RUN apt-get install -y vim less net-tools inetutils-ping wget curl git telnet nmap socat dnsutils netcat tree htop unzip sudo software-properties-common jq psmisc
 
 #MongoDB
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
-    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' > /etc/apt/sources.list.d/mongodb.list && \
+    echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" > /etc/apt/sources.list.d/mongodb-org-3.0.list && \
     apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-org
-RUN mkdir -p /data/db
+RUN apt-get install -y mongodb-org
 
 #Configuration
-ADD . /docker
-RUN mv /etc/mongod.conf /etc/mongod.conf.original && ln -s /docker/etc/mongod.conf /etc/
+#RUN mv /etc/mongod.conf /etc/mongod.conf.original
+#ADD mongod.conf /etc/mongod.conf
 
-#Runit Automatically setup all services in the sv directory
-RUN for dir in /docker/sv/*; do echo $dir; chmod +x $dir/run $dir/log/run; ln -s $dir /etc/service/; done
+#Add runit services
+ADD sv /etc/service 
 
-ENV HOME /root
-WORKDIR /root
-EXPOSE 22
