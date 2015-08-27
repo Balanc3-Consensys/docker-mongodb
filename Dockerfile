@@ -21,8 +21,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
 RUN apt-get install -y mongodb-org
 
 #Configuration
-#RUN mv /etc/mongod.conf /etc/mongod.conf.original
-#ADD mongod.conf /etc/mongod.conf
+RUN mv /etc/mongod.conf /etc/mongod.conf.original
+ADD mongod.conf /etc/mongod.conf
 
 #Add runit services
 ADD sv /etc/service 
