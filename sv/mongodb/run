@@ -1,3 +1,10 @@
-#!/bin/sh
+#!/bin/bash
+
+#sv start socklog-unix || exit 1
+
+source /etc/envvars
+
+mkdir -p /data/db
+
 exec 2>&1
-exec /usr/bin/mongod -f /etc/mongod.conf
+exec /mongodb/bin/mongod
