@@ -1,1 +1,4 @@
-docker run -p 27017:27017 -p 28017:28017 --rm -i -t mongodb /bin/bash
+#!/bin/bash
+source helper
+
+docker run --rm -v `pwd`:/docker -it ${IMAGE} bash
