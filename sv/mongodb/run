@@ -7,4 +7,4 @@ source /etc/envvars
 mkdir -p /data/db
 
 exec 2>&1
-exec /mongodb/bin/mongod
+exec /mongodb/bin/mongod $ARGS
