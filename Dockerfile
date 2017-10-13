@@ -16,6 +16,16 @@ CMD bash -c 'export > /etc/envvars && /usr/sbin/runsvdir-start'
 # Utilities
 RUN apt-get install -y --no-install-recommends vim less net-tools inetutils-ping wget curl git telnet nmap socat dnsutils netcat tree htop unzip sudo software-properties-common jq psmisc iproute python ssh rsync gettext-base
 
+FROM golang as build
+RUN curl https://glide.sh/get | sh
+RUN git clone https://github.com/dcu/mongodb_exporter.git $GOPATH/src/github.com/dcu/mongodb_exporter
+RUN cd $GOPATH/src/github.com/dcu/mongodb_exporter && \
+    make build
+RUN mv $GOPATH/src/github.com/dcu/mongodb_exporter/mongodb_exporter /mongodb_exporter
+
+FROM base as final
+COPY --from=build /mongodb_exporter /usr/local/bin/mongodb_exporter
+
 #MongoDB
 RUN wget -O - https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.9.tgz | tar zx
 RUN mv mongodb* mongodb
