@@ -27,10 +27,11 @@ FROM base as final
 COPY --from=build /mongodb_exporter /usr/local/bin/mongodb_exporter
 
 #MongoDB
-RUN wget -O - https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.9.tgz | tar zx
+RUN wget -O - https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.10.tgz | tar zx
 RUN mv mongodb* mongodb
 
-ENV PATH $PATH:/mongodb/bin
+ENV PATH=$PATH:/mongodb/bin
+ENV DBPATH=/data/db
 
 #Add runit services
 ADD sv /etc/service 

@@ -4,7 +4,8 @@
 
 source /etc/envvars
 
-mkdir -p /data/db
+DBPATH=${DBPATH="/data/db"}
+mkdir -p $DBPATH
 
 exec 2>&1
-exec /mongodb/bin/mongod $ARGS
+exec /mongodb/bin/mongod --dbpath=$DBPATH $ARGS
